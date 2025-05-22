@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TodosContext } from '../contexts/TodosContexts';
 
-export const useRequestEditTodo = (todosURL, setRefreshTodoItems, refreshTodoItems) => {
+export const useRequestEditTodo = (todosURL) => {
 	const [isEditingTodo, setIsEditingTodo] = useState(false); // for adjustment process, process explanation - Process
 	const [editedTodoValue, setEditedTodoValue] = useState(''); // for adjustment process, target.value - Value
 	const [editedTodoId, setEditedTodoId] = useState(null); // for adjustment process - Id
 	const [newError, setNewError] = useState(null); // for adjustment process - Error
+
+	const { refreshTodoItems, setRefreshTodoItems } = useContext(TodosContext);
 
 	const startEditing = (id, title) => {
 		setEditedTodoId(id);

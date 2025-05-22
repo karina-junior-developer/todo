@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TodosContext } from '../contexts/TodosContexts';
 
-export const useSortTodos = (setTodos, todos, originalTodos) => {
+export const useSortTodos = () => {
 	const [isSorted, setIsSorted] = useState(false); // for sorting - initial state
+
+	const { todos, setTodos, originalTodos } = useContext(TodosContext);
 
 	const toSort = () => {
 		const sortedTodos = [...todos].sort((a, b) => a.title.localeCompare(b.title));

@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TodosContext } from '../contexts/TodosContexts';
 
-export const useRequestDeleteTodo = (setRefreshTodoItems, refreshTodoItems, todosURL) => {
+export const useRequestDeleteTodo = (todosURL) => {
 	const [isDeletingTodo, setIsDeletingTodo] = useState(false); // for deleting process
+
+	const { refreshTodoItems, setRefreshTodoItems } = useContext(TodosContext);
 
 	const requestDeleteTodo = (id) => {
 		setIsDeletingTodo(true);

@@ -8,7 +8,8 @@ import {
 } from '../../hooks/index';
 import { todosURL } from '../../constants/constants';
 import styles from './App.module.css';
-import { useState } from 'react';
+import { useContext } from 'react';
+import { TodosContext } from '../../contexts/TodosContexts';
 import {
 	EditInputBlock,
 	LoadingBlock,
@@ -16,20 +17,12 @@ import {
 	SearchBlock,
 	TodoListBlock,
 } from '../index';
-import { TodosContext } from '../../contexts/TodosContexts';
 
 export const App = () => {
-	const [todos, setTodos] = useState([]); // for todos []
-	const [refreshTodoItems, setRefreshTodoItems] = useState(false); // for updating todos
-	const [originalTodos, setOriginalTodos] = useState([]); // for sorting - saving original []
+	const { todos } = useContext(TodosContext);
 
 	// General, main todo list data gathering - DONE
-	const { isLoadingTodosData } = useRequestGetTodos(
-		todosURL,
-		setOriginalTodos,
-		refreshTodoItems,
-		setTodos,
-	);
+	const { isLoadingTodosData } = useRequestGetTodos(todosURL);
 
 	// Add todo item to the list - DONE
 	const {
@@ -39,14 +32,10 @@ export const App = () => {
 		isAddingTodo,
 		error,
 		todoValue,
-	} = useRequestAddTodo(todosURL, setRefreshTodoItems, refreshTodoItems);
+	} = useRequestAddTodo(todosURL);
 
 	// Delete todo task from the list - DONE
-	const { requestDeleteTodo, isDeletingTodo } = useRequestDeleteTodo(
-		setRefreshTodoItems,
-		refreshTodoItems,
-		todosURL,
-	);
+	const { requestDeleteTodo, isDeletingTodo } = useRequestDeleteTodo(todosURL);
 
 	// Edit todo task - DONE
 	const {
@@ -59,96 +48,77 @@ export const App = () => {
 		editAndSaveTodo,
 		onChangeEditingTodoTask,
 		onKeyDownEditingTask,
-	} = useRequestEditTodo(todosURL, setRefreshTodoItems, refreshTodoItems);
+	} = useRequestEditTodo(todosURL);
 
 	// Search - DONE
-	const { onChangeSearchedValue, foundValues, searchedTodoValue } =
-		useSearchTodos(todos);
+	const { onChangeSearchedValue, foundValues, searchedTodoValue } = useSearchTodos();
 
 	// Sort - DONE
-	const { toSort, toDefaultPosition, isSorted } = useSortTodos(
-		setTodos,
-		todos,
-		originalTodos,
-	);
+	const { toSort, toDefaultPosition, isSorted } = useSortTodos();
 
 	return (
 		<>
-			<TodosContext
-				value={{
-					todos,
-					setTodos,
-					refreshTodoItems,
-					setRefreshTodoItems,
-					originalTodos,
-					setOriginalTodos,
-				}}
-			>
-				<SearchBlock
-					searchedTodoValue={searchedTodoValue}
-					onChangeSearchedValue={onChangeSearchedValue}
-					isSorted={isSorted}
-					toDefaultPosition={toDefaultPosition}
-					toSort={toSort}
+			<SearchBlock
+				searchedTodoValue={searchedTodoValue}
+				onChangeSearchedValue={onChangeSearchedValue}
+				isSorted={isSorted}
+				toDefaultPosition={toDefaultPosition}
+				toSort={toSort}
+			/>
+			<div className={styles.mainBlock}>
+				<MainInputBlock
+					error={error}
+					todoValue={todoValue}
+					onChangeTodoTask={onChangeTodoTask}
+					onKeyDownTodoTask={onKeyDownTodoTask}
+					requestAddTodo={requestAddTodo}
+					isAddingTodo={isAddingTodo}
 				/>
-				<div className={styles.mainBlock}>
-					<MainInputBlock
-						error={error}
-						todoValue={todoValue}
-						onChangeTodoTask={onChangeTodoTask}
-						onKeyDownTodoTask={onKeyDownTodoTask}
-						requestAddTodo={requestAddTodo}
-						isAddingTodo={isAddingTodo}
-					/>
-					<div className={styles.todoSection}>
-						{isLoadingTodosData ? (
-							<LoadingBlock />
-						) : (
-							<ul>
-								{(searchedTodoValue ? foundValues : todos).map(
-									({ title, id }) => {
-										return (
-											<li key={id}>
-												{isEditingTodo && editedTodoId === id ? (
-													<EditInputBlock
-														newError={newError}
-														editedTodoValue={editedTodoValue}
-														onChangeEditingTodoTask={
-															onChangeEditingTodoTask
-														}
-														onKeyDownEditingTask={(event) =>
-															onKeyDownEditingTask(
-																event,
-																id,
-															)
-														}
-														editAndSaveTodo={() =>
-															editAndSaveTodo(id)
-														}
-														cancelEditing={cancelEditing}
-													/>
-												) : (
-													<TodoListBlock
-														title={title}
-														requestDeleteTodo={() =>
-															requestDeleteTodo(id)
-														}
-														isDeletingTodo={isDeletingTodo}
-														startEditing={() =>
-															startEditing(id, title)
-														}
-														isEditingTodo={isEditingTodo}
-													/>
-												)}
-											</li>
-										);
-									},
-								)}
-							</ul>
-						)}
-					</div>
+				<div className={styles.todoSection}>
+					{isLoadingTodosData ? (
+						<LoadingBlock />
+					) : (
+						<ul>
+							{(searchedTodoValue ? foundValues : todos).map(
+								({ title, id }) => {
+									return (
+										<li key={id}>
+											{isEditingTodo && editedTodoId === id ? (
+												<EditInputBlock
+													newError={newError}
+													editedTodoValue={editedTodoValue}
+													onChangeEditingTodoTask={
+														onChangeEditingTodoTask
+													}
+													onKeyDownEditingTask={(event) =>
+														onKeyDownEditingTask(event, id)
+													}
+													editAndSaveTodo={() =>
+														editAndSaveTodo(id)
+													}
+													cancelEditing={cancelEditing}
+												/>
+											) : (
+												<TodoListBlock
+													title={title}
+													requestDeleteTodo={() =>
+														requestDeleteTodo(id)
+													}
+													isDeletingTodo={isDeletingTodo}
+													startEditing={() =>
+														startEditing(id, title)
+													}
+													isEditingTodo={isEditingTodo}
+												/>
+											)}
+										</li>
+									);
+								},
+							)}
+						</ul>
+					)}
 				</div>
-			</TodosContext>
+			</div>
 		</>
 	);
 };

@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TodosContext } from '../contexts/TodosContexts';
 
-export const useSearchTodos = (todos) => {
+export const useSearchTodos = () => {
 	const [searchedTodoValue, setSearchedTodoValue] = useState(''); // for searching bar target.value
+
+	const { todos } = useContext(TodosContext);
 
 	const onChangeSearchedValue = (event) => {
 		setSearchedTodoValue(event.target.value);

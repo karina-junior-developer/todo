@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TodosContext } from '../contexts/TodosContexts';
 
-export const useRequestAddTodo = (todosURL, setRefreshTodoItems, refreshTodoItems) => {
+export const useRequestAddTodo = (todosURL) => {
 	const [todoValue, setTodoValue] = useState(''); // for target.value, main input
 	const [error, setError] = useState(null); // for empty value error on main todo input
 	const [isAddingTodo, setIsAddingTodo] = useState(false); // for adding new todo process
+
+	const { refreshTodoItems, setRefreshTodoItems } = useContext(TodosContext);
 
 	const onChangeTodoTask = (event) => {
 		setTodoValue(event.target.value);
