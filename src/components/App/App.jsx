@@ -14,11 +14,11 @@ import { MainInputBlock } from '../MainInputBlock/MainInputBlock';
 import { LoadingBlock } from '../LoadingBlock/LoadingBlock';
 import { EditInputBlock } from '../EditInputBlock/EditInputBlock';
 import { TodoListBlock } from '../TodoListBlock/TodoListBlock';
+import { TodosContext } from '../../contexts/TodosContexts';
 
 export const App = () => {
 	const [todos, setTodos] = useState([]); // for todos []
 	const [refreshTodoItems, setRefreshTodoItems] = useState(false); // for updating todos
-
 	const [originalTodos, setOriginalTodos] = useState([]); // for sorting - saving original []
 
 	// General, main todo list data gathering - DONE
@@ -72,67 +72,81 @@ export const App = () => {
 
 	return (
 		<>
-			<SearchBlock
-				searchedTodoValue={searchedTodoValue}
-				onChangeSearchedValue={onChangeSearchedValue}
-				isSorted={isSorted}
-				toDefaultPosition={toDefaultPosition}
-				toSort={toSort}
-			/>
-			<div className={styles.mainBlock}>
-				<MainInputBlock
-					error={error}
-					todoValue={todoValue}
-					onChangeTodoTask={onChangeTodoTask}
-					onKeyDownTodoTask={onKeyDownTodoTask}
-					requestAddTodo={requestAddTodo}
-					isAddingTodo={isAddingTodo}
+			<TodosContext
+				value={{
+					todos,
+					setTodos,
+					refreshTodoItems,
+					setRefreshTodoItems,
+					originalTodos,
+					setOriginalTodos,
+				}}
+			>
+				<SearchBlock
+					searchedTodoValue={searchedTodoValue}
+					onChangeSearchedValue={onChangeSearchedValue}
+					isSorted={isSorted}
+					toDefaultPosition={toDefaultPosition}
+					toSort={toSort}
 				/>
-				<div className={styles.todoSection}>
-					{isLoadingTodosData ? (
-						<LoadingBlock />
-					) : (
-						<ul>
-							{(searchedTodoValue ? foundValues : todos).map(
-								({ title, id }) => {
-									return (
-										<li key={id}>
-											{isEditingTodo && editedTodoId === id ? (
-												<EditInputBlock
-													newError={newError}
-													editedTodoValue={editedTodoValue}
-													onChangeEditingTodoTask={
-														onChangeEditingTodoTask
-													}
-													onKeyDownEditingTask={(event) =>
-														onKeyDownEditingTask(event, id)
-													}
-													editAndSaveTodo={() =>
-														editAndSaveTodo(id)
-													}
-													cancelEditing={cancelEditing}
-												/>
-											) : (
-												<TodoListBlock
-													title={title}
-													requestDeleteTodo={() =>
-														requestDeleteTodo(id)
-													}
-													isDeletingTodo={isDeletingTodo}
-													startEditing={() =>
-														startEditing(id, title)
-													}
-													isEditingTodo={isEditingTodo}
-												/>
-											)}
-										</li>
-									);
-								},
-							)}
-						</ul>
-					)}
+				<div className={styles.mainBlock}>
+					<MainInputBlock
+						error={error}
+						todoValue={todoValue}
+						onChangeTodoTask={onChangeTodoTask}
+						onKeyDownTodoTask={onKeyDownTodoTask}
+						requestAddTodo={requestAddTodo}
+						isAddingTodo={isAddingTodo}
+					/>
+					<div className={styles.todoSection}>
+						{isLoadingTodosData ? (
+							<LoadingBlock />
+						) : (
+							<ul>
+								{(searchedTodoValue ? foundValues : todos).map(
+									({ title, id }) => {
+										return (
+											<li key={id}>
+												{isEditingTodo && editedTodoId === id ? (
+													<EditInputBlock
+														newError={newError}
+														editedTodoValue={editedTodoValue}
+														onChangeEditingTodoTask={
+															onChangeEditingTodoTask
+														}
+														onKeyDownEditingTask={(event) =>
+															onKeyDownEditingTask(
+																event,
+																id,
+															)
+														}
+														editAndSaveTodo={() =>
+															editAndSaveTodo(id)
+														}
+														cancelEditing={cancelEditing}
+													/>
+												) : (
+													<TodoListBlock
+														title={title}
+														requestDeleteTodo={() =>
+															requestDeleteTodo(id)
+														}
+														isDeletingTodo={isDeletingTodo}
+														startEditing={() =>
+															startEditing(id, title)
+														}
+														isEditingTodo={isEditingTodo}
+													/>
+												)}
+											</li>
+										);
+									},
+								)}
+							</ul>
+						)}
+					</div>
 				</div>
-			</div>
+			</TodosContext>
 		</>
 	);
 };
