@@ -9,11 +9,13 @@ import {
 import { todosURL } from '../../constants/constants';
 import styles from './App.module.css';
 import { useState } from 'react';
-import { SearchBlock } from '../SearchBlock/SearchBlock';
-import { MainInputBlock } from '../MainInputBlock/MainInputBlock';
-import { LoadingBlock } from '../LoadingBlock/LoadingBlock';
-import { EditInputBlock } from '../EditInputBlock/EditInputBlock';
-import { TodoListBlock } from '../TodoListBlock/TodoListBlock';
+import {
+	EditInputBlock,
+	LoadingBlock,
+	MainInputBlock,
+	SearchBlock,
+	TodoListBlock,
+} from '../index';
 import { TodosContext } from '../../contexts/TodosContexts';
 
 export const App = () => {
