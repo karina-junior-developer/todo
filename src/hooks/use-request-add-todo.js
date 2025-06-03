@@ -1,12 +1,13 @@
-import { useState, useContext } from 'react';
-import { TodosContext } from '../contexts/TodosContexts';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setRefresh } from '../actions/set-refresh';
 
 export const useRequestAddTodo = (todosURL) => {
 	const [todoValue, setTodoValue] = useState(''); // for target.value, main input
 	const [error, setError] = useState(null); // for empty value error on main todo input
 	const [isAddingTodo, setIsAddingTodo] = useState(false); // for adding new todo process
 
-	const { refreshTodoItems, setRefreshTodoItems } = useContext(TodosContext);
+	const dispatch = useDispatch();
 
 	const onChangeTodoTask = (event) => {
 		setTodoValue(event.target.value);
@@ -29,7 +30,7 @@ export const useRequestAddTodo = (todosURL) => {
 			.then((rawTodo) => rawTodo.json())
 			.then((finalTodo) => {
 				console.log('Todo successfully added!', finalTodo);
-				setRefreshTodoItems(!refreshTodoItems);
+				dispatch(setRefresh());
 			})
 			.finally(() => setIsAddingTodo(false));
 

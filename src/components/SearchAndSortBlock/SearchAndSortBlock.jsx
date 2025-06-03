@@ -1,7 +1,7 @@
-import styles from './SearchBlock.module.css';
+import styles from './SearchAndSortBlock.module.css';
 import PropTypes from 'prop-types';
 
-export const SearchBlock = ({
+export const SearchAndSortBlock = ({
 	searchedTodoValue,
 	onChangeSearchedValue,
 	isSorted,
@@ -28,7 +28,7 @@ export const SearchBlock = ({
 	);
 };
 
-SearchBlock.PropTypes = {
+SearchAndSortBlock.PropTypes = {
 	searchedTodoValue: PropTypes.string,
 	onChangeSearchedValue: PropTypes.func,
 	isSorted: PropTypes.bool,

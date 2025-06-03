@@ -8,18 +8,19 @@ import {
 } from '../../hooks/index';
 import { todosURL } from '../../constants/constants';
 import styles from './App.module.css';
-import { useContext } from 'react';
-import { TodosContext } from '../../contexts/TodosContexts';
+import { useSelector } from 'react-redux';
+import { selectTodos } from '../../selectors';
+
 import {
 	EditInputBlock,
 	LoadingBlock,
 	MainInputBlock,
-	SearchBlock,
+	SearchAndSortBlock,
 	TodoListBlock,
 } from '../index';
 
 export const App = () => {
-	const { todos } = useContext(TodosContext);
+	const todos = useSelector(selectTodos);
 
 	// General, main todo list data gathering - DONE
 	const { isLoadingTodosData } = useRequestGetTodos(todosURL);
@@ -58,7 +59,7 @@ export const App = () => {
 
 	return (
 		<>
-			<SearchBlock
+			<SearchAndSortBlock
 				searchedTodoValue={searchedTodoValue}
 				onChangeSearchedValue={onChangeSearchedValue}
 				isSorted={isSorted}

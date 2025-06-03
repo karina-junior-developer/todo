@@ -1,10 +1,11 @@
-import { useState, useContext } from 'react';
-import { TodosContext } from '../contexts/TodosContexts';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setRefresh } from '../actions/set-refresh';
 
 export const useRequestDeleteTodo = (todosURL) => {
 	const [isDeletingTodo, setIsDeletingTodo] = useState(false); // for deleting process
 
-	const { refreshTodoItems, setRefreshTodoItems } = useContext(TodosContext);
+	const dispatch = useDispatch();
 
 	const requestDeleteTodo = (id) => {
 		setIsDeletingTodo(true);
@@ -15,7 +16,7 @@ export const useRequestDeleteTodo = (todosURL) => {
 			.then((rawTodo) => rawTodo.json())
 			.then((finalTodo) => {
 				console.log('Todo deleted', finalTodo);
-				setRefreshTodoItems(!refreshTodoItems);
+				dispatch(setRefresh());
 			})
 			.finally(() => setIsDeletingTodo(false));
 	};

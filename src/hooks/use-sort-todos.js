@@ -1,19 +1,23 @@
-import { useState, useContext } from 'react';
-import { TodosContext } from '../contexts/TodosContexts';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectTodos, selectOriginalTodos } from '../selectors';
+import { setTodos } from '../actions';
 
 export const useSortTodos = () => {
-	const [isSorted, setIsSorted] = useState(false); // for sorting - initial state
+	const [isSorted, setIsSorted] = useState(false);
 
-	const { todos, setTodos, originalTodos } = useContext(TodosContext);
+	const dispatch = useDispatch();
+	const todos = useSelector(selectTodos);
+	const originalTodos = useSelector(selectOriginalTodos);
 
 	const toSort = () => {
 		const sortedTodos = [...todos].sort((a, b) => a.title.localeCompare(b.title));
-		setTodos(sortedTodos);
+		dispatch(setTodos(sortedTodos));
 		setIsSorted(true);
 	};
 
 	const toDefaultPosition = () => {
-		setTodos(originalTodos);
+		dispatch(setTodos(originalTodos));
 		setIsSorted(false);
 	};
 

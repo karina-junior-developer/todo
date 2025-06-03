@@ -1,20 +1,17 @@
-import { useState, useEffect, useContext } from 'react';
-import { TodosContext } from '../contexts/TodosContexts';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTodos } from '../actions/set-todos';
+import { todosURL } from '../constants/constants';
+import { selectIsLoading, selectRefreshTodoItems } from '../selectors';
 
-export const useRequestGetTodos = (todosURL) => {
-	const [isLoadingTodosData, setIsLoadingTodosData] = useState(false); // for taking todo list data from DB
-	const { setTodos, setOriginalTodos, refreshTodoItems } = useContext(TodosContext);
+export const useRequestGetTodos = () => {
+	const dispatch = useDispatch();
+	const isLoading = useSelector(selectIsLoading);
+	const isRefreshing = useSelector(selectRefreshTodoItems);
 
 	useEffect(() => {
-		setIsLoadingTodosData(true);
-		fetch(todosURL)
-			.then((rowTodos) => rowTodos.json())
-			.then((finalTodos) => {
-				setTodos(finalTodos);
-				setOriginalTodos(finalTodos);
-			})
-			.finally(() => setIsLoadingTodosData(false));
-	}, [refreshTodoItems, todosURL, setTodos, setOriginalTodos]);
+		dispatch(fetchTodos(todosURL));
+	}, [dispatch, isRefreshing]);
 
-	return { isLoadingTodosData };
+	return { isLoadingTodosData: isLoading };
 };

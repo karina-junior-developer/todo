@@ -1,10 +1,10 @@
-import { useState, useContext } from 'react';
-import { TodosContext } from '../contexts/TodosContexts';
+import { useState } from 'react';
+import { selectTodos } from '../selectors';
+import { useSelector } from 'react-redux';
 
 export const useSearchTodos = () => {
 	const [searchedTodoValue, setSearchedTodoValue] = useState(''); // for searching bar target.value
-
-	const { todos } = useContext(TodosContext);
+	const todos = useSelector(selectTodos);
 
 	const onChangeSearchedValue = (event) => {
 		setSearchedTodoValue(event.target.value);

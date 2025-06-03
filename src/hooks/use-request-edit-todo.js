@@ -1,5 +1,6 @@
-import { useState, useContext } from 'react';
-import { TodosContext } from '../contexts/TodosContexts';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setRefresh } from '../actions/set-refresh';
 
 export const useRequestEditTodo = (todosURL) => {
 	const [isEditingTodo, setIsEditingTodo] = useState(false); // for adjustment process, process explanation - Process
@@ -7,7 +8,7 @@ export const useRequestEditTodo = (todosURL) => {
 	const [editedTodoId, setEditedTodoId] = useState(null); // for adjustment process - Id
 	const [newError, setNewError] = useState(null); // for adjustment process - Error
 
-	const { refreshTodoItems, setRefreshTodoItems } = useContext(TodosContext);
+	const dispatch = useDispatch();
 
 	const startEditing = (id, title) => {
 		setEditedTodoId(id);
@@ -39,7 +40,7 @@ export const useRequestEditTodo = (todosURL) => {
 			.then((finalTodo) => {
 				console.log('Todo successfully adjusted!', finalTodo);
 				setNewError(null);
-				setRefreshTodoItems(!refreshTodoItems);
+				dispatch(setRefresh());
 			})
 			.finally(() => cancelEditing());
 	};
