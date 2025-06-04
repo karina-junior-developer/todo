@@ -1,1 +1,1 @@
-export const selectOriginalTodos = (state) => state.originalTodos;
+export const selectOriginalTodos = (state) => state.originalTodos.originalTodos;
